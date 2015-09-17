@@ -221,7 +221,7 @@ module Auth
     get '/validate' do
       sentry.authenticate!(:client)
       headers['Content-Type'] = 'text/plain;charset=utf-8'
-      if account_id = Auth.validate_token(params[:access_token], params[:scope])
+      if account_id == Auth.validate_token(params[:access_token], params[:scope])
         [200, account_id]
       else
         [403, 'Forbidden']

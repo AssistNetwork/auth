@@ -1,4 +1,4 @@
-require 'rake/testtask'
+require 'rake/test'
 
 $LOAD_PATH.unshift 'lib'
 

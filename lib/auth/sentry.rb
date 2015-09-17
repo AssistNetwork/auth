@@ -1,8 +1,16 @@
 module Auth
   class Sentry
     class User
-      def initialize(id); @id = id; end
-      def id; @id; end
+      def initialize(id, redirect_uri=NIL)
+        @id = id
+        @redirect_uri = redirect_uri unless redirect_uri
+      end
+      def id
+        @id
+      end
+      def redirect_uri
+        @redirect_uri
+      end
     end
 
     def initialize(request)

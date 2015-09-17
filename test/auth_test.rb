@@ -1,6 +1,6 @@
-require File.expand_path('test/test_helper')
+require File.expand_path('test_helper')
 
-class AuthTest < Test::Unit::TestCase
+class AuthTest < Minitest::Test
 
   def setup
     Auth.redis.flushall
@@ -9,7 +9,7 @@ class AuthTest < Test::Unit::TestCase
   def test_can_set_a_namespace_through_a_url_like_string
     assert Auth.redis
     assert_equal :auth, Auth.redis.namespace
-    Auth.redis = 'localhost:9736/namespace'
+    Auth.redis = 'redis://localhost:6379/namespace'
     assert_equal 'namespace', Auth.redis.namespace
   end
 
@@ -58,8 +58,11 @@ class AuthTest < Test::Unit::TestCase
   end
 
   def test_can_authenticate_a_client
+    Auth.remove_client('test-client')
+
     client = Auth.register_client('test-client', 'Test client', 'http://example.org/')
     client = Auth.authenticate_client('test-client', client.secret)
+
     assert_equal 'test-client', client.id
     assert_equal 'Test client', client.name
     assert_equal 'http://example.org/', client.redirect_uri
@@ -71,6 +74,7 @@ class AuthTest < Test::Unit::TestCase
   end
 
   def test_can_authenticate_a_client_without_a_client_secret
+    Auth.remove_client('test-client')
     client = Auth.register_client('test-client', 'Test client', 'http://example.org/')
     client = Auth.authenticate_client('test-client')
     assert_equal 'test-client', client.id
@@ -96,7 +100,8 @@ class AuthTest < Test::Unit::TestCase
   end
 
   def test_can_issue_a_token_for_a_specified_set_of_scopes
-    assert Auth.issue_token('test-account', 'read write offline')
+    token = Auth.issue_token('test-account', 'read write offline')
+    assert true, Auth.validate_token(token,'read write offline')
   end
 
   def test_can_validate_a_token_with_a_specified_set_of_scopes
@@ -115,11 +120,11 @@ class AuthTest < Test::Unit::TestCase
   end
 
   def test_can_issue_a_refresh_token
-    flunk
+    flunk('hajrá fradi')
   end
 
   def test_can_redeem_a_refresh_token
-    flunk
+    flunk('hajrá fradi')
   end
 
   def test_can_issue_an_authorization_code
@@ -128,7 +133,7 @@ class AuthTest < Test::Unit::TestCase
 
   def test_can_validate_an_authentication_code
     code = Auth.issue_code('test-account', 'test-client', 'https://example.com/callback')
-    assert_equal ['test-account', ''], Auth.validate_code(code, 'test-client', 'https://example.com/callback')
+    assert_equal ['test-account',''], Auth.validate_code(code, 'test-client', 'https://example.com/callback')
     assert_equal false, Auth.validate_code(code, 'wrong-client', 'https://example.com/callback')
     assert_equal false, Auth.validate_code(code, 'test-client', 'https://example.com/wrong-callback')
   end

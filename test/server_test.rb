@@ -1,7 +1,7 @@
-require File.expand_path('test/test_helper')
-require 'auth/server'
+require File.expand_path('test_helper')
+require '../lib/auth/server'
 
-class ServerTest < Test::Unit::TestCase
+class ServerTest < Minitest::Test
   include Rack::Test::Methods
 
   def app

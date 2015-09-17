@@ -1,1 +1,1 @@
-rvm 1.9.2@auth --create
+rvm ruby-2.2.0@auth --create

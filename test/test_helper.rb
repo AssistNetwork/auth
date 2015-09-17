@@ -1,17 +1,18 @@
 ENV['RACK_ENV'] = 'test'
 
 dir = File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH.unshift dir + '/../lib'
+$LOAD_PATH.unshift dir + '../lib'
 
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack/test'
-require 'auth'
+require '../lib/auth'
 
 #
 # make sure we can run redis
 #
 
-if !system("which redis-server")
+=begin
+unless system("which redis-server")
   puts '', "** can't find `redis-server` in your path"
   puts "** try running `sudo rake install`"
   abort ''
@@ -26,11 +27,7 @@ end
 at_exit do
   next if $!
 
-  if defined?(MiniTest)
-    exit_code = MiniTest::Unit.new.run(ARGV)
-  else
-    exit_code = Test::Unit::AutoRunner.run
-  end
+  exit_code = MiniTest::Test.new(ARGV)
 
   pid = `ps -A -o pid,command | grep [r]edis-test`.split(" ")[0]
   puts "Killing test redis server..."
@@ -42,3 +39,5 @@ end
 puts "Starting redis for testing at localhost:9736..."
 `redis-server #{dir}/redis-test.conf`
 Auth.redis = 'localhost:9736'
+
+=end

@@ -1,7 +1,7 @@
-require File.expand_path('test/test_helper')
+require File.expand_path('test_helper')
 require 'auth/middleware'
 
-class MiddlewareTest < Test::Unit::TestCase
+class MiddlewareTest < Minitest::Test
   include Rack::Test::Methods
 
   def inner_app
