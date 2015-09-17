@@ -1,5 +1,5 @@
-require File.expand_path('test_helper')
-require 'auth/middleware'
+require_relative 'test_helper'
+require_relative '../lib/auth/middleware'
 
 class MiddlewareTest < Minitest::Test
   include Rack::Test::Methods

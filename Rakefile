@@ -1,4 +1,5 @@
-require 'rake/test'
+require 'bundler/setup'
+require 'rake'
 
 $LOAD_PATH.unshift 'lib'
 

@@ -5,7 +5,7 @@ $LOAD_PATH.unshift dir + '../lib'
 
 require 'minitest/autorun'
 require 'rack/test'
-require '../lib/auth'
+require_relative '../lib/auth'
 
 #
 # make sure we can run redis

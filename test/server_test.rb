@@ -1,5 +1,5 @@
-require File.expand_path('test_helper')
-require '../lib/auth/server'
+require_relative 'test_helper'
+require_relative '../lib/auth/server'
 
 class ServerTest < Minitest::Test
   include Rack::Test::Methods

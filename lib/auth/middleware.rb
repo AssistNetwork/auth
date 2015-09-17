@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rack'
 require 'rack/auth/abstract/handler'
 require 'rack/auth/abstract/request'
-require 'auth'
+require_relative '../auth'
 
 module Auth
   class Middleware < Rack::Auth::AbstractHandler

@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sinatra')
   s.add_dependency('redis-namespace')
 
+  s.add_development_dependency('rake')
   s.add_development_dependency('rack-test')
   s.add_development_dependency('minitest')
 end
