@@ -3,7 +3,7 @@ require 'sinatra/base'
 require 'erb'
 require 'cgi'
 require 'uri'
-require 'auth'
+require_relative '../auth'
 
 module Auth
   class Server < Sinatra::Base
