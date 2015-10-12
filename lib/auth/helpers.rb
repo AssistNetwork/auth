@@ -4,9 +4,10 @@ require 'digest/sha2'
 begin
   require 'securerandom'
 rescue LoadError
+  p 'No Securerandom gem'
 end
 
-module Auth
+module Oauth2
   module Helpers
 
     # Generate a unique cryptographically secure secret
@@ -42,6 +43,7 @@ module Auth
       begin
         JSON.parse(object)
       rescue JSON::ParserError
+        p 'JSON Parse Error' #TODO LOG
       end
     end
 

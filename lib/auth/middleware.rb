@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rack'
 require 'rack/auth/abstract/handler'
 require 'rack/auth/abstract/request'
-require_relative '../auth'
+require 'oauth2'
 
 module Auth
   class Middleware < Rack::Auth::AbstractHandler
@@ -27,9 +27,7 @@ module Auth
 
       if @options[:allow_unauthenticated]
         res = @app.call(env)
-        return [res[0],
-                res[1].merge('WWW-Authenticate' => challenge),
-                res[2]]
+        [res[0], res[1].merge('WWW-Authenticate' => challenge), res[2]]
       else
         unauthorized
       end
@@ -59,12 +57,12 @@ module Auth
         end
 
         def access_token
-          @access_token ||= params ? params.unpack("m*").first :
+          @access_token ||= params ? params.unpack('m*').first :
                                      request.params['access_token']
         end
 
         def account_id
-          @account_id ||= Auth.validate_token(access_token)
+          @account_id ||= Oauth2.validate_token(access_token)
         end
       end
 

@@ -1,4 +1,4 @@
-module Auth
+module Oauth2
   class AuthException < RuntimeError; end
   class InvalidRequest < AuthException; end
   class UnauthorizedClient < AuthException; end

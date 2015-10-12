@@ -1,31 +1,23 @@
-module Auth
+module Oauth2
   class Sentry
     class User
-      def initialize(id, redirect_uri=NIL)
-        @id = id
-        @redirect_uri = redirect_uri unless redirect_uri
-      end
-      def id
-        @id
-      end
-      def redirect_uri
-        @redirect_uri
-      end
+      def initialize(id); @id = id; end
+      def id; @id; end
     end
 
     def initialize(request)
       @request = request
     end
-
-    def authenticate!(domain=:default)
-      case domain.to_sym
+    
+    def authenticate!(user_type=:default)
+      case user_type.to_sym
       when :client
-        @client = Auth.authenticate_client(@request.params['client_id'], @request.params['client_secret'])
+        @client = Oauth2.authenticate_client(@request.params['client_id'], @request.params['client_secret'])
         unless @client
           raise UnauthorizedClient, 'Invalid client'
         end
       else
-        if Auth.authenticate_account(@request.params['username'], @request.params['password'])
+        if Oauth2.authenticate_account(@request.params['username'], @request.params['password'])
           @user = User.new(@request.params['username'])
         else
           raise AccessDenied, 'Invalid username or password'

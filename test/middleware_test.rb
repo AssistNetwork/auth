@@ -1,5 +1,5 @@
 require_relative 'test_helper'
-require_relative '../lib/auth/middleware'
+require '../lib/auth/middleware'
 
 class MiddlewareTest < Minitest::Test
   include Rack::Test::Methods
@@ -9,15 +9,18 @@ class MiddlewareTest < Minitest::Test
   end
 
   def app
-    Auth::Middleware.new(inner_app, 'Test realm')
+    Oauth2::Middleware.new(inner_app, 'Test realm')
   end
 
   def unprotected_app
-    Auth::Middleware.new(inner_app, 'Test realm', :allow_unauthenticated => true)
+    Oauth2::Middleware.new(inner_app, 'Test realm', :allow_unauthenticated => true)
   end
 
   def setup
-    Auth.redis.flushall
+    Oauth2.redis.flushall
+    Oauth2.register_account('test', 'test')
+    @client = Oauth2.register_client('test-client', 'test', 'https://example.com/')
+    @authorization_code = Oauth2.issue_code('test-account', @client.id, @client.redirect_uri, 'read write')
   end
 
   def test_unauthenticated_request
@@ -29,7 +32,7 @@ class MiddlewareTest < Minitest::Test
   end
 
   def test_authenticated_request
-    token = Auth.issue_token('test-user')
+    token = Oauth2.issue_token('test-user')
     env = Rack::MockRequest.env_for('/test',
       'HTTP_AUTHORIZATION' => "Bearer #{Base64.encode64(token)}")
     res = app.call(env)
@@ -65,7 +68,7 @@ class MiddlewareTest < Minitest::Test
   end
 
   def test_authenticated_request_on_unprotected_app
-    token = Auth.issue_token('test-user')
+    token = Oauth2.issue_token('test-user')
     env = Rack::MockRequest.env_for('/test',
       'HTTP_AUTHORIZATION' => "Bearer #{Base64.encode64(token)}")
     res = unprotected_app.call(env)
@@ -75,7 +78,7 @@ class MiddlewareTest < Minitest::Test
   end
 
   def test_authenticated_request_with_query_parameter
-    token = Auth.issue_token('test-user')
+    token = Oauth2.issue_token('test-user')
     env = Rack::MockRequest.env_for("/test?access_token=#{CGI.escape(token)}")
     res = app.call(env)
     assert_equal 200, res[0]

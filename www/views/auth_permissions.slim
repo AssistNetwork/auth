@@ -1,0 +1,30 @@
+doctype html
+
+html
+
+  head
+    title Request for permission
+
+    body
+
+      p
+        /a(href=@client.url)= @client.name
+        a= @client.name
+        ' is requesting permission to do the following:
+
+      dl
+        - params[:scope]
+        /- scopes.each do |scope|
+
+          /dt= scope.name
+          /dl= scope.description
+      form(method="post")
+
+        input(type="hidden" name="form_post_code" value=@client.form_post_code)
+        input(type="hidden" name="client_id" value=params[:client_id])
+        input(type="hidden" name="redirect_uri" value=params[:redirect_uri])
+        input(type="hidden" name="scope" value=params[:scope])
+
+        button.primary.button(type="submit") Allow
+        a.secondary.button(type="button") Don’t allow
+
